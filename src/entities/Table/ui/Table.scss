@@ -2,7 +2,7 @@
   padding: 5px 0 5px 10px;
   border-radius: 20px;
 
-  background: rgba(255,255,255,0.4);
+  background: rgba(248, 249, 252, 0.8);
   box-shadow: 0 2px 14px 5px rgba(86, 96, 117, 0.2);
 
   max-width: 1200px;
@@ -57,6 +57,24 @@
     tr td {
       border-top: 1px solid #b7b9c0;
       cursor: pointer;
+    }
+
+    .resize-handle {
+      display: block;
+      position: absolute;
+      cursor: col-resize;
+      width: 7px;
+      right: 0;
+      top: 0;
+      border-right: 2px solid #eaeaea;
+
+      &:hover {
+        border-color: #c6c6cd;
+      }
+
+      &.active {
+        border-color: #5157a5;
+      }
     }
 
   }

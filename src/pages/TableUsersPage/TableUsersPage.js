@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import './ui/TableUsersPage.scss';
 import {LOADING_STATUS} from "../../app/utils/storeUtils";
 import {Context} from "../../index";
@@ -24,8 +24,11 @@ const getTableContent = (users) => {
 };
 
 const TableUsersPage = observer(() => {
-
     const {user} = useContext(Context);
+    // состояние, отвечающее за видимость модального окна
+    const [modalActive, setModalActive] = useState(false);
+    // id запрошенного user для модального окна
+    const [userID, setUserID] = useState(null);
 
     // получаем данные о пользователях
     useEffect( () => {
@@ -44,6 +47,12 @@ const TableUsersPage = observer(() => {
         fetchUserList();
     }, []);
 
+    // обработчик события открытия модального окна
+    const onOpenModal = (id) => {
+        setUserID(id);
+        setModalActive(true);
+    }
+
     return (
         <div className={'container'}>
             {user.userList.length === 0 ?
@@ -60,8 +69,11 @@ const TableUsersPage = observer(() => {
                     }
                 </div>
                 :
-                <Table headers={getHeaders(user.userList)} minCellWidth={50}
-                       tableContent={getTableContent(user.userList)}/>
+                <Table headers={getHeaders(user.userList)}
+                       minCellWidth={50}
+                       tableContent={getTableContent(user.userList)}
+                       onOpenModal={onOpenModal}
+                />
             }
         </div>
     );
