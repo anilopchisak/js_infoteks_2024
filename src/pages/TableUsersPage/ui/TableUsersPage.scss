@@ -1,0 +1,7 @@
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  max-height: 100vh; // высота контейнера = высоте окна браузера
+  overflow: hidden;
+}
