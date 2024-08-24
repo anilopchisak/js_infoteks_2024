@@ -4,6 +4,7 @@ import {LOADING_STATUS} from "../../app/utils/storeUtils";
 import {Context} from "../../index";
 import Table from "../../entities/Table/Table";
 import {observer} from "mobx-react-lite";
+import Modal from "../../entities/Modal/Modal";
 
 // Вспомогательная функция для создания заголовков
 const getHeaders = (users) => {
@@ -47,6 +48,23 @@ const TableUsersPage = observer(() => {
         fetchUserList();
     }, []);
 
+    useEffect(() => {
+        if (modalActive === true && userID !== null) {
+            user.removeUser();
+
+            const fetchUser = async (id) => {
+                try {
+                    await user.fetchUser(id+1);
+                }
+                catch (e) {
+                    console.log(e.message);
+                }
+            }
+
+            fetchUser(userID);
+        }
+    }, [modalActive, userID]);
+
     // обработчик события открытия модального окна
     const onOpenModal = (id) => {
         setUserID(id);
@@ -55,26 +73,74 @@ const TableUsersPage = observer(() => {
 
     return (
         <div className={'container'}>
-            {user.userList.length === 0 ?
+            <div>
+                {user.userList.length === 0 ?
+                    <div>
+                        {user.userListLoadingStatus === LOADING_STATUS.ERROR &&
+                            <div>
+                                Error loading
+                            </div>
+                        }
+                        {user.userListLoadingStatus === LOADING_STATUS.LOADING &&
+                            <div>
+                                Loading...
+                            </div>
+                        }
+                    </div>
+                    :
+                    <Table headers={getHeaders(user.userList)}
+                           minCellWidth={50}
+                           tableContent={getTableContent(user.userList)}
+                           onOpenModal={onOpenModal}
+                    />
+                }
+            </div>
+            <Modal active={modalActive} setActive={setModalActive}>
                 <div>
-                    {user.userListLoadingStatus === LOADING_STATUS.ERROR &&
-                        <div>
-                            Error loading
-                        </div>
+                    {user.userLoadingStatus === LOADING_STATUS.LOADING &&
+                        <div>Loading...</div>
                     }
-                    {user.userListLoadingStatus === LOADING_STATUS.LOADING &&
+                    {user.userLoadingStatus === LOADING_STATUS.ERROR &&
+                        <div>Error loading</div>
+                    }
+                    {user.userLoadingStatus === LOADING_STATUS.IDLE &&
+                        <div>Server connection error</div>
+                    }
+                    {user.userLoadingStatus === LOADING_STATUS.SUCCESS &&
                         <div>
-                            Loading...
+                            <div className={'modal-name'}>
+                                <h1>{user.user.firstName} {user.user.lastName}</h1>
+                                {user.user.maidenName &&
+                                    <h2>({user.user.maidenName})</h2>
+                                }
+                            </div>
+                            {user.user.address &&
+                                <h3>{user.user.address.city}, {user.user.address.address}</h3>
+                            }
+                            <div className={'modal-item'} >
+                                <h3>general info</h3>
+                                <div id={'gen'}>
+                                    <div id={'year'}>
+                                        {user.user.age} years
+                                    </div>
+                                    <div>
+                                        <p>{user.user.height} sm</p>
+                                        <p>{user.user.weight} kg</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div className={'modal-item'} >
+                                <h3>contacts</h3>
+                                <div>
+                                    <p>{user.user.phone}</p>
+                                    <p>{user.user.email}</p>
+                                </div>
+                            </div>
                         </div>
                     }
                 </div>
-                :
-                <Table headers={getHeaders(user.userList)}
-                       minCellWidth={50}
-                       tableContent={getTableContent(user.userList)}
-                       onOpenModal={onOpenModal}
-                />
-            }
+            </Modal>
         </div>
     );
 });

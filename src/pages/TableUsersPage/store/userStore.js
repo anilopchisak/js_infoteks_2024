@@ -28,6 +28,11 @@ class UserStore {
         return this._user;
     }
 
+    removeUser() {
+        this._user = {};
+    }
+
+
     async fetchUserList() {
         this.userListLoadingStatus = LOADING_STATUS.LOADING;
 

@@ -1,0 +1,73 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(21, 7, 59, 0.4);
+  backdrop-filter: blur(5px);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.5s;
+
+  &.active {
+    opacity: 1;
+    pointer-events: all;
+    cursor: pointer;
+  }
+}
+
+.modal-content {
+  width: 25rem;
+  max-width: 600px;
+  height: auto;
+  padding: 30px;
+  border-radius: 12px;
+
+  backdrop-filter: blur(7px);
+  color: rgb(242, 244, 254);
+
+  transform: scale(0);
+  transition: 0.4s ease-in-out;
+
+  &.active {
+    transform: scale(1);
+    cursor: default;
+  }
+
+  .modal-name {
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .modal-item {
+    margin: 1rem 0;
+
+    h3 {
+      text-transform: uppercase;
+      letter-spacing: 0.25rem;
+      border-top: solid rgba(var(--colorLight), 0.5) 2px;
+      border-bottom: solid rgba(var(--colorLight), 0.5) 2px;
+      margin-bottom: 0.5rem;
+    }
+
+    #gen {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    #year {
+      font-size: 1.5rem;
+    }
+  }
+}

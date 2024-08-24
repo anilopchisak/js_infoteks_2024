@@ -8,6 +8,10 @@
   max-width: 1200px;
   width: 100%;
 
+  // настроим высоту окна, чтобы не приходилось листать далеко вниз
+  max-height: calc(100vh - 60px); // вычитаем padding (TableUsersPage.scss .container) из высоты окна
+  height: auto; // высота автоматически подстраивается под содержимое
+
   overflow: auto;
 
   .table-user {
