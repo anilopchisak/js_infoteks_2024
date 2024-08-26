@@ -13,7 +13,7 @@ class UserStore {
         this._userList = []; // все пользователи для таблицы
         this._user = {}; // подробная информация о пользователе для модального окна
         this._filter = [];
-        this._sort = [];
+        // this._sort = [];
 
         makeAutoObservable(this);
     }
@@ -27,9 +27,9 @@ class UserStore {
     setFilter(filter) {
         this._filter = filter;
     }
-    setSort(sort) {
-        this._sort = sort;
-    }
+    // setSort(sort) {
+    //     this._sort = sort;
+    // }
 
     get userList() {
         return this._userList;
@@ -40,12 +40,17 @@ class UserStore {
     get filter() {
         return this._filter;
     }
-    get sort() {
-        return this._sort;
-    }
+    // get sort() {
+    //     return this._sort;
+    // }
 
     removeUser() {
         this._user = {};
+        this.userLoadingStatus = LOADING_STATUS.IDLE;
+    }
+    removeFilter() {
+        this._filter = [];
+        this.filterLoadingStatus = LOADING_STATUS.IDLE;
     }
 
 
@@ -83,7 +88,7 @@ class UserStore {
 
         try {
             const response = await fetchFilter(value);
-            this.setUser(response);
+            this.setFilter(response);
             this.filterLoadingStatus = LOADING_STATUS.SUCCESS;
         } catch(e) {
             console.log(e.message);
@@ -96,7 +101,7 @@ class UserStore {
     //
     //     try {
     //         const response = await fetchSort(sortBy, order);
-    //         this.setUser(response);
+    //         this.setSort(response);
     //         this.sortLoadingStatus = LOADING_STATUS.SUCCESS;
     //     } catch(e) {
     //         console.log(e.message);

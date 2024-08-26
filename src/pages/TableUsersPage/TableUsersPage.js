@@ -33,14 +33,12 @@ const TableUsersPage = observer(() => {
     // id запрошенного user для модального окна
     const [userID, setUserID] = useState(null);
 
+    const [search, setSearch] = useState('');
+
     // получаем данные о пользователях при загрузке страницы
     useEffect( () => {
         // предотвращаем повторные запросы к серверу, если данные уже загружены или находятся в процессе загрузки
         if ([LOADING_STATUS.SUCCESS, LOADING_STATUS.LOADING].includes(user.userListLoadingStatus)) return;
-
-        fetch('https://dummyjson.com/users?sortBy=firstName&order=asc&filter?age=28')
-            .then(res => res.json())
-            .then(console.log);
 
         const fetchUserList = async () => {
             try {
@@ -77,36 +75,84 @@ const TableUsersPage = observer(() => {
         setModalActive(true);
     }
 
+    // если в строку поиска что то введено, то производится поиск
+    useEffect(() => {
+        if (search !== '') {
+            const fetchFilter = async (search) => {
+                try {
+                    await user.fetchFilter(search);
+                }
+                catch (e) {
+                    console.log(e.message);
+                }
+            }
+
+            fetchFilter(search);
+        }
+        else {
+            user.removeFilter();
+        }
+    }, [search]);
+
     return (
         <div className={'container'}>
             <div className={'container-flex'}>
                 {user.userListLoadingStatus === LOADING_STATUS.SUCCESS ?
-                    <div className={'search-container'}><Search columns={getHeaders(user.userList)}/></div>
+                    <div className={'search-container'}><Search columns={getHeaders(user.userList)} setSearch={setSearch}/></div>
                     :
-                    <div className={'search-container'}><Search columns={null}/></div>
+                    <div className={'search-container'}><Search columns={null} setSearch={setSearch}/></div>
                 }
                 <div className={'table-container'}>
-                    {user.userListLoadingStatus === LOADING_STATUS.ERROR &&
+                    {user.filterLoadingStatus === LOADING_STATUS.SUCCESS ?
                         <div>
-                            Error loading
+                            {user.filterLoadingStatus === LOADING_STATUS.ERROR &&
+                                <div>
+                                    Error loading
+                                </div>
+                            }
+                            {user.filterLoadingStatus === LOADING_STATUS.LOADING &&
+                                <div>
+                                    Loading...
+                                </div>
+                            }
+                            {user.filterLoadingStatus === LOADING_STATUS.SUCCESS &&
+                                <Table headers={getHeaders(user.userList)}
+                                       minCellWidth={50}
+                                       tableContent={getTableContent(user.filter)}
+                                       onOpenModal={onOpenModal}/>
+                            }
+                            {user.filterLoadingStatus === LOADING_STATUS.IDLE &&
+                                <div>
+                                    No data
+                                </div>
+                            }
+                        </div>
+                    :
+                        <div>
+                            {user.userListLoadingStatus === LOADING_STATUS.ERROR &&
+                                <div>
+                                    Error loading
+                                </div>
+                            }
+                            {user.userListLoadingStatus === LOADING_STATUS.LOADING &&
+                                <div>
+                                    Loading...
+                                </div>
+                            }
+                            {user.userListLoadingStatus === LOADING_STATUS.SUCCESS &&
+                                <Table headers={getHeaders(user.userList)}
+                                       minCellWidth={50}
+                                       tableContent={getTableContent(user.userList)}
+                                       onOpenModal={onOpenModal}/>
+                            }
+                            {user.userListLoadingStatus === LOADING_STATUS.IDLE &&
+                                <div>
+                                    No data
+                                </div>
+                            }
                         </div>
                     }
-                    {user.userListLoadingStatus === LOADING_STATUS.LOADING &&
-                        <div>
-                            Loading...
-                        </div>
-                    }
-                    {user.userListLoadingStatus === LOADING_STATUS.SUCCESS &&
-                        <Table headers={getHeaders(user.userList)}
-                               minCellWidth={50}
-                               tableContent={getTableContent(user.userList)}
-                               onOpenModal={onOpenModal}/>
-                    }
-                    {user.userListLoadingStatus === LOADING_STATUS.IDLE &&
-                        <div>
-                            No data
-                        </div>
-                    }
+
                 </div>
                 <Modal active={modalActive} setActive={setModalActive}>
                     {user.userLoadingStatus === LOADING_STATUS.LOADING &&
@@ -123,7 +169,6 @@ const TableUsersPage = observer(() => {
                     }
                 </Modal>
             </div>
-
         </div>
     );
 });

@@ -26,7 +26,7 @@ export const fetchUser = async (id) => {
 
 export const fetchFilter = async (value) => {
     try {
-        const response = await fetch('https://dummyjson.com/users/filter?value=' + value);
+        const response = await fetch('https://dummyjson.com/users/filter?key=firstName&value=' + value);
         const data = await response.json();
         console.log(data);
         return data;
