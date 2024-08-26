@@ -63,14 +63,14 @@
       right: 0;
       top: 0;
       //z-index: 1;
-      border-right: 2px solid #eaeaea;
+      border-right: 2px solid #ffffff;
 
       &:hover {
-        border-color: rgba(0, 0, 0, 0.4);
+        border-right: 3px solid #ffffff;
       }
 
       &.active {
-        border-color: rgba(0, 0, 0, 0.79);
+        border-right: 3px solid #ffffff;
       }
     }
 
