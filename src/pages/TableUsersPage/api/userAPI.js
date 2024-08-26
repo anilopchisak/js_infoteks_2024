@@ -1,4 +1,4 @@
-
+// все users
 export const fetchUserList = async () => {
     try {
         const response = await fetch('https://dummyjson.com/users');
@@ -11,8 +11,7 @@ export const fetchUserList = async () => {
     }
 }
 
-
-
+// user по id
 export const fetchUser = async (id) => {
     try {
         const response = await fetch('https://dummyjson.com/users/'+ id);
@@ -24,3 +23,27 @@ export const fetchUser = async (id) => {
         throw error;
     }
 }
+
+export const fetchFilter = async (value) => {
+    try {
+        const response = await fetch('https://dummyjson.com/users/filter?value=' + value);
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch user list:", error);
+        throw error;
+    }
+}
+
+// export const fetchSort = async (sortBy, order) => {
+//     try {
+//         const response = await fetch('https://dummyjson.com/users?sortBy=' + sortBy + '&order=' + order);
+//         const data = await response.json();
+//         console.log(data);
+//         return data;
+//     } catch (error) {
+//         console.error("Failed to fetch user list:", error);
+//         throw error;
+//     }
+// }

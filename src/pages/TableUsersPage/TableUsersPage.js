@@ -5,6 +5,8 @@ import {Context} from "../../index";
 import Table from "../../entities/Table/Table";
 import {observer} from "mobx-react-lite";
 import Modal from "../../entities/Modal/Modal";
+import UserCard from "../../entities/Modal/features/UserCard";
+import Search from "../../entities/Search/Search";
 
 // Вспомогательная функция для создания заголовков
 const getHeaders = (users) => {
@@ -31,10 +33,14 @@ const TableUsersPage = observer(() => {
     // id запрошенного user для модального окна
     const [userID, setUserID] = useState(null);
 
-    // получаем данные о пользователях
+    // получаем данные о пользователях при загрузке страницы
     useEffect( () => {
         // предотвращаем повторные запросы к серверу, если данные уже загружены или находятся в процессе загрузки
         if ([LOADING_STATUS.SUCCESS, LOADING_STATUS.LOADING].includes(user.userListLoadingStatus)) return;
+
+        fetch('https://dummyjson.com/users?sortBy=firstName&order=asc&filter?age=28')
+            .then(res => res.json())
+            .then(console.log);
 
         const fetchUserList = async () => {
             try {
@@ -48,9 +54,9 @@ const TableUsersPage = observer(() => {
         fetchUserList();
     }, []);
 
+    // получаем данные о пользователе по id при изменении состояния modalActive
     useEffect(() => {
         if (modalActive === true && userID !== null) {
-            user.removeUser();
 
             const fetchUser = async (id) => {
                 try {
@@ -73,30 +79,36 @@ const TableUsersPage = observer(() => {
 
     return (
         <div className={'container'}>
-            <div>
-                {user.userList.length === 0 ?
-                    <div>
-                        {user.userListLoadingStatus === LOADING_STATUS.ERROR &&
-                            <div>
-                                Error loading
-                            </div>
-                        }
-                        {user.userListLoadingStatus === LOADING_STATUS.LOADING &&
-                            <div>
-                                Loading...
-                            </div>
-                        }
-                    </div>
+            <div className={'container-flex'}>
+                {user.userListLoadingStatus === LOADING_STATUS.SUCCESS ?
+                    <div className={'search-container'}><Search columns={getHeaders(user.userList)}/></div>
                     :
-                    <Table headers={getHeaders(user.userList)}
-                           minCellWidth={50}
-                           tableContent={getTableContent(user.userList)}
-                           onOpenModal={onOpenModal}
-                    />
+                    <div className={'search-container'}><Search columns={null}/></div>
                 }
-            </div>
-            <Modal active={modalActive} setActive={setModalActive}>
-                <div>
+                <div className={'table-container'}>
+                    {user.userListLoadingStatus === LOADING_STATUS.ERROR &&
+                        <div>
+                            Error loading
+                        </div>
+                    }
+                    {user.userListLoadingStatus === LOADING_STATUS.LOADING &&
+                        <div>
+                            Loading...
+                        </div>
+                    }
+                    {user.userListLoadingStatus === LOADING_STATUS.SUCCESS &&
+                        <Table headers={getHeaders(user.userList)}
+                               minCellWidth={50}
+                               tableContent={getTableContent(user.userList)}
+                               onOpenModal={onOpenModal}/>
+                    }
+                    {user.userListLoadingStatus === LOADING_STATUS.IDLE &&
+                        <div>
+                            No data
+                        </div>
+                    }
+                </div>
+                <Modal active={modalActive} setActive={setModalActive}>
                     {user.userLoadingStatus === LOADING_STATUS.LOADING &&
                         <div>Loading...</div>
                     }
@@ -107,40 +119,11 @@ const TableUsersPage = observer(() => {
                         <div>Server connection error</div>
                     }
                     {user.userLoadingStatus === LOADING_STATUS.SUCCESS &&
-                        <div>
-                            <div className={'modal-name'}>
-                                <h1>{user.user.firstName} {user.user.lastName}</h1>
-                                {user.user.maidenName &&
-                                    <h2>({user.user.maidenName})</h2>
-                                }
-                            </div>
-                            {user.user.address &&
-                                <h3>{user.user.address.city}, {user.user.address.address}</h3>
-                            }
-                            <div className={'modal-item'} >
-                                <h3>general info</h3>
-                                <div id={'gen'}>
-                                    <div id={'year'}>
-                                        {user.user.age} years
-                                    </div>
-                                    <div>
-                                        <p>{user.user.height} sm</p>
-                                        <p>{user.user.weight} kg</p>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div className={'modal-item'} >
-                                <h3>contacts</h3>
-                                <div>
-                                    <p>{user.user.phone}</p>
-                                    <p>{user.user.email}</p>
-                                </div>
-                            </div>
-                        </div>
+                        <UserCard user={user}/>
                     }
-                </div>
-            </Modal>
+                </Modal>
+            </div>
+
         </div>
     );
 });

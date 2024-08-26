@@ -11,7 +11,6 @@ const createHeaders = (headers) => {
 }
 
 const Table = ({headers, tableContent, minCellWidth, onOpenModal}) => {
-
     // начальная высота столбца
     const [tableHeight, setTableHeight] = useState("auto");
 

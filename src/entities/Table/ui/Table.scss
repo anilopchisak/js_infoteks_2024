@@ -1,16 +1,8 @@
 .table-wrapper {
   padding: 5px 0 5px 10px;
-  border-radius: 20px;
-
-  background: rgba(248, 249, 252, 0.8);
-  box-shadow: 0 2px 14px 5px rgba(86, 96, 117, 0.2);
 
   max-width: 1200px;
   width: 100%;
-
-  // настроим высоту окна, чтобы не приходилось листать далеко вниз
-  max-height: calc(100vh - 60px); // вычитаем padding (TableUsersPage.scss .container) из высоты окна
-  height: auto; // высота автоматически подстраивается под содержимое
 
   overflow: auto;
 
@@ -31,7 +23,7 @@
     }
 
     tbody tr:hover {
-      background: radial-gradient(rgba(247, 248, 255, 1), rgba(255, 255, 255, 0.7));
+      //background: radial-gradient(rgba(247, 248, 255, 1), rgba(255, 255, 255, 0.7));
     }
 
     th {
@@ -54,12 +46,12 @@
       display: block;
     }
 
-    tr:hover {
-      background: white;
-    }
+    //tr:hover {
+    //  background: white;
+    //}
 
     tr td {
-      border-top: 1px solid #b7b9c0;
+      border-top: 1px solid #fff;
       cursor: pointer;
     }
 
@@ -70,14 +62,15 @@
       width: 7px;
       right: 0;
       top: 0;
+      //z-index: 1;
       border-right: 2px solid #eaeaea;
 
       &:hover {
-        border-color: #c6c6cd;
+        border-color: rgba(0, 0, 0, 0.4);
       }
 
       &.active {
-        border-color: #5157a5;
+        border-color: rgba(0, 0, 0, 0.79);
       }
     }
 

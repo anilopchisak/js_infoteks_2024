@@ -5,15 +5,27 @@
   box-sizing: border-box;
 
   body {
-    height: 100%;
-    background: linear-gradient(45deg, #f2f6ff, #eef1f5);
+    height: 100vh;
+    background-color: #000000;
+    background-image:
+            radial-gradient(ellipse at 0% 100%, #F22613 10%, transparent 20%),
+            radial-gradient(ellipse at 8% 90%, #F28F6B 15%, transparent 30%),
+
+            radial-gradient(ellipse at 100% 20%, #6bf26f 0%, transparent 15%),
+            radial-gradient(ellipse at 100% 30%, #F22613 15%, transparent 25%),
+            radial-gradient(ellipse at 100% 25%, #dae2e3 10%, transparent 35%),
+
+            radial-gradient(ellipse at 0% 0%, #6bf26f 0%, transparent 15%)
+
+    ;
+    background-size: cover;
   }
 }
 
 :root {
-  --colorLight: 242, 244, 254;
-  --colorDark: 21, 7, 59;
-  --colorMedium: 189, 190, 199;
-  --colorAccent: 72, 25, 204;
+  --colorLight: 255, 255, 255;
+  --colorDark: 14, 33, 14;
+  --colorMedium: 107,242,111;
+  --colorAccent: 253, 90, 47;
+  color: #0e210e;
 }
-
