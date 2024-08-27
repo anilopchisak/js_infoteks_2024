@@ -38,13 +38,14 @@ const Table = ({headers, tableContent, minCellWidth, onOpenModal}) => {
     // вычисление новой ширины столбцов при перемещении мыши
     const mouseMove = useCallback(
         (e) => {
-            // перебираем все колонки таблицы
+            const tableRect = tableElement.current.getBoundingClientRect();
+
             const gridColumns = columns.map((col, i) => {
                 if (i === activeIndex) {
-                    // разница между текущей позицией мыши и начальным положением столбца
-                    const width = e.clientX - col.ref.current.offsetLeft;
+                    // Вычисляем новую ширину столбца, учитывая позицию таблицы относительно окна
+                    const width = e.clientX - tableRect.left - col.ref.current.offsetLeft + tableElement.current.scrollLeft;
 
-                    // ограничение минимальной ширины столбца
+                    // Ограничиваем минимальную ширину столбца
                     if (width >= minCellWidth) {
                         return `${width}px`;
                     }
@@ -52,11 +53,11 @@ const Table = ({headers, tableContent, minCellWidth, onOpenModal}) => {
                 return `${col.ref.current.offsetWidth}px`;
             });
 
-            // устанавливаем ширину каждого столбца на основе вычисленного массива gridColumns
             tableElement.current.style.gridTemplateColumns = `${gridColumns.join(" ")}`;
         },
         [activeIndex, columns, minCellWidth]
     );
+
 
     // удаление слушателей действий мыши
     const removeListeners = useCallback(() => {
