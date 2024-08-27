@@ -83,13 +83,17 @@ class UserStore {
         }
     }
 
-    async fetchFilter(value) {
+    async fetchFilter(value, keys) {
         this.filterLoadingStatus =  LOADING_STATUS.LOADING;
 
         try {
-            const response = await fetchFilter(value);
-            this.setFilter(response);
-            this.filterLoadingStatus = LOADING_STATUS.SUCCESS;
+            const response = await fetchFilter(value, keys);
+            if (response.users !== undefined)
+            {
+                this.setFilter(response);
+                this.filterLoadingStatus = LOADING_STATUS.SUCCESS;
+            }
+            else this.filterLoadingStatus = LOADING_STATUS.NOT_FOUND;
         } catch(e) {
             console.log(e.message);
             this.filterLoadingStatus = LOADING_STATUS.ERROR;

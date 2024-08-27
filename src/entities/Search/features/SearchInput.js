@@ -8,7 +8,8 @@ const SearchInput = ({setSearch}) => {
     const [value, setValue] = useState('');
 
     const onChangeInput = (input) => {
-        if (input == null) {
+        if (input === '') {
+            setSearch(input);
             user.removeFilter();
         }
         else {

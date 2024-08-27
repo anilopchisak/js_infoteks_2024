@@ -35,6 +35,8 @@ const TableUsersPage = observer(() => {
 
     const [search, setSearch] = useState('');
 
+    const columnsNames = ['firstName', 'lastName', 'age', 'gender', 'phone', 'address.city', 'address.address'];
+
     // получаем данные о пользователях при загрузке страницы
     useEffect( () => {
         // предотвращаем повторные запросы к серверу, если данные уже загружены или находятся в процессе загрузки
@@ -80,7 +82,7 @@ const TableUsersPage = observer(() => {
         if (search !== '') {
             const fetchFilter = async (search) => {
                 try {
-                    await user.fetchFilter(search);
+                    await user.fetchFilter(search, columnsNames);
                 }
                 catch (e) {
                     console.log(e.message);
@@ -103,7 +105,7 @@ const TableUsersPage = observer(() => {
                     <div className={'search-container'}><Search columns={null} setSearch={setSearch}/></div>
                 }
                 <div className={'table-container'}>
-                    {user.filterLoadingStatus === LOADING_STATUS.SUCCESS ?
+                    {user.filterLoadingStatus !== LOADING_STATUS.IDLE ?
                         <div>
                             {user.filterLoadingStatus === LOADING_STATUS.ERROR &&
                                 <div>
@@ -123,7 +125,12 @@ const TableUsersPage = observer(() => {
                             }
                             {user.filterLoadingStatus === LOADING_STATUS.IDLE &&
                                 <div>
-                                    No data
+                                    Connection error
+                                </div>
+                            }
+                            {user.filterLoadingStatus === LOADING_STATUS.NOT_FOUND &&
+                                <div>
+                                    Data not found
                                 </div>
                             }
                         </div>
@@ -147,7 +154,7 @@ const TableUsersPage = observer(() => {
                             }
                             {user.userListLoadingStatus === LOADING_STATUS.IDLE &&
                                 <div>
-                                    No data
+                                    Connection error
                                 </div>
                             }
                         </div>
