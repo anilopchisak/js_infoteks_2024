@@ -5,25 +5,56 @@ import {Context} from "../../index";
 import Table from "../../entities/Table/Table";
 import {observer} from "mobx-react-lite";
 import Modal from "../../entities/Modal/Modal";
-import UserCard from "../../entities/Modal/features/UserCard";
+import UserCard from "../../entities/Modal/ui/UserCard";
 import Search from "../../entities/Search/Search";
+import LoadingStatusHandler from "../../shared/ui/LoadingStatusHandler";
 
 // Вспомогательная функция для создания заголовков
 const getHeaders = (users) => {
     if (!users || users.users.length === 0) return [];
-    return ["Full name", "Age", "Sex", "Phone", "Address"];
+    return ["Full name", "Age", "Gender", "Phone", "Address"];
 }
 
-// Вспомогательная функция для создания содержимого таблицы
-const getTableContent = (users) => {
+// Вспомогательная функция для создания содержимого таблицы и сортировки
+const getTableContent = (users, sort) => {
     if (!users) return [];
-    return users.users.map(user => [
-        `${user.firstName} ${user.lastName}`,
-        user.age,
-        user.gender,
-        user.phone,
-        `${user.address.city}, ${user.address.address}`
-    ]);
+
+    // Создаем копию массива пользователей для сортировки
+    let sortedUsers = [...users.users];
+
+    if (sort[0] !== 'Select' && sort[1] !== 'none') {
+        sortedUsers.sort((a, b) => {
+            let compareValue = 0;
+
+            switch (sort[0]) {
+                case 'Full name':
+                    compareValue = `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`);
+                    break;
+                case 'Age':
+                    compareValue = a.age - b.age;
+                    break;
+                case 'Gender':
+                    compareValue = a.gender.localeCompare(b.gender);
+                    break;
+                case 'Address':
+                    compareValue = `${a.address.city}, ${a.address.address}`.localeCompare(`${b.address.city}, ${b.address.address}`);
+                    break;
+                default:
+                    break;
+            }
+            return sort[1] === 'asc' ? compareValue : -compareValue;
+        });
+    }
+    return sortedUsers.map(user => ({
+        id: user.id,
+        rowData: [
+            `${user.firstName} ${user.lastName}`,
+            user.age,
+            user.gender,
+            user.phone,
+            `${user.address.city}, ${user.address.address}`
+        ]
+    }));
 };
 
 const TableUsersPage = observer(() => {
@@ -60,7 +91,7 @@ const TableUsersPage = observer(() => {
 
             const fetchUser = async (id) => {
                 try {
-                    await user.fetchUser(id+1);
+                    await user.fetchUser(id);
                 }
                 catch (e) {
                     console.log(e.message);
@@ -99,8 +130,11 @@ const TableUsersPage = observer(() => {
     return (
         <div className={'container'}>
             <div className={'container-flex'}>
+                <div className={'site-name'}>
+                    <h1>DummyJSON user search</h1>
+                </div>
                 {user.userListLoadingStatus === LOADING_STATUS.SUCCESS ?
-                    <div className={'search-container'}><Search columns={getHeaders(user.userList)} setSearch={setSearch}/></div>
+                    <div className={'search-container'}><Search columns={getHeaders(user.userList).filter((el) => el !== 'Phone')} setSearch={setSearch}/></div>
                     :
                     <div className={'search-container'}><Search columns={null} setSearch={setSearch}/></div>
                 }
@@ -120,7 +154,7 @@ const TableUsersPage = observer(() => {
                             {user.filterLoadingStatus === LOADING_STATUS.SUCCESS &&
                                 <Table headers={getHeaders(user.userList)}
                                        minCellWidth={50}
-                                       tableContent={getTableContent(user.filter)}
+                                      tableContent={getTableContent(user.filter, user.sort)}
                                        onOpenModal={onOpenModal}/>
                             }
                             {user.filterLoadingStatus === LOADING_STATUS.IDLE &&
@@ -149,7 +183,7 @@ const TableUsersPage = observer(() => {
                             {user.userListLoadingStatus === LOADING_STATUS.SUCCESS &&
                                 <Table headers={getHeaders(user.userList)}
                                        minCellWidth={50}
-                                       tableContent={getTableContent(user.userList)}
+                                       tableContent={getTableContent(user.userList, user.sort)}
                                        onOpenModal={onOpenModal}/>
                             }
                             {user.userListLoadingStatus === LOADING_STATUS.IDLE &&

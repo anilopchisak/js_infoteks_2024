@@ -1,14 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react';
-import SearchInput from "./features/SearchInput";
-import SearchSelect from "./features/SearchSelect";
+import SearchInput from "./ui/SearchInput";
+import SearchSelect from "./ui/SearchSelect";
 import {Context} from "../../index";
-import {observer} from "mobx-react-lite";
+import './ui/Search.scss';
 
 const Search = ({columns, setSearch}) => {
-    const {user} = useContext(Context);
-
     return (
-        <div>
+        <div className={'search'}>
             <SearchInput setSearch={setSearch}/>
             <SearchSelect columns={columns}/>
         </div>

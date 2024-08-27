@@ -7,13 +7,12 @@ class UserStore {
     userListLoadingStatus = LOADING_STATUS.IDLE;
     userLoadingStatus = LOADING_STATUS.IDLE;
     filterLoadingStatus =  LOADING_STATUS.IDLE;
-    sortLoadingStatus =  LOADING_STATUS.IDLE;
 
     constructor() {
         this._userList = []; // все пользователи для таблицы
         this._user = {}; // подробная информация о пользователе для модального окна
         this._filter = [];
-        // this._sort = [];
+        this._sort = ['Select', 'none'];
 
         makeAutoObservable(this);
     }
@@ -27,9 +26,10 @@ class UserStore {
     setFilter(filter) {
         this._filter = filter;
     }
-    // setSort(sort) {
-    //     this._sort = sort;
-    // }
+    setSort(sort) {
+        this._sort = sort;
+        console.log(this._sort);
+    }
 
     get userList() {
         return this._userList;
@@ -40,9 +40,9 @@ class UserStore {
     get filter() {
         return this._filter;
     }
-    // get sort() {
-    //     return this._sort;
-    // }
+    get sort() {
+        return this._sort;
+    }
 
     removeUser() {
         this._user = {};
@@ -99,19 +99,6 @@ class UserStore {
             this.filterLoadingStatus = LOADING_STATUS.ERROR;
         }
     }
-
-    // async fetchSort(sortBy, order) {
-    //     this.sortLoadingStatus =  LOADING_STATUS.LOADING;
-    //
-    //     try {
-    //         const response = await fetchSort(sortBy, order);
-    //         this.setSort(response);
-    //         this.sortLoadingStatus = LOADING_STATUS.SUCCESS;
-    //     } catch(e) {
-    //         console.log(e.message);
-    //         this.sortLoadingStatus = LOADING_STATUS.ERROR;
-    //     }
-    // }
 }
 
 export default UserStore;

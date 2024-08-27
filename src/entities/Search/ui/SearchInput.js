@@ -1,5 +1,4 @@
 import React, {useContext, useState} from 'react';
-import '../ui/SearchInput.scss';
 import { CiSearch } from "react-icons/ci";
 import {Context} from "../../../index";
 
@@ -7,6 +6,7 @@ const SearchInput = ({setSearch}) => {
     const {user} = useContext(Context);
     const [value, setValue] = useState('');
 
+    // если строка поиска пустая, удаляем отфильтрованный список, выводим исходный
     const onChangeInput = (input) => {
         if (input === '') {
             setSearch(input);
@@ -18,6 +18,8 @@ const SearchInput = ({setSearch}) => {
     }
 
 
+
+
     return (
         <div className={"search-input"}>
             <input
@@ -25,7 +27,7 @@ const SearchInput = ({setSearch}) => {
                 onChange={(e) => onChangeInput(e.target.value)}
                 placeholder={'Search...'}
             />
-            <CiSearch className={'icon'} onClick={() => setSearch(value)}/>
+            <CiSearch className={'icon-search'} onClick={() => setSearch(value)}/>
         </div>
     );
 };

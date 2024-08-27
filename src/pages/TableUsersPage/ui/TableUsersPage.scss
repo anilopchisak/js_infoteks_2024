@@ -12,12 +12,14 @@
     display: flex;
     flex-direction: column;
 
-    .search-container {
-      display: flex;
-      justify-content: space-around;
+    .site-name {
+      padding: 5px 20px;
+      @include shadow-container;
+    }
 
+    .search-container {
       margin-bottom: 16px;
-      padding: 15px;
+      padding: 20px;
 
       border-bottom-left-radius: 15px;
       border-bottom-right-radius: 15px;

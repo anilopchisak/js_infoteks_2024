@@ -27,7 +27,7 @@ const Table = ({headers, tableContent, minCellWidth, onOpenModal}) => {
     // offsetHeight = height (px) + padding + border без margin
     useEffect(() => {
         setTableHeight(tableElement.current.offsetHeight);
-    }, []);
+    }, [tableContent]);
 
     // устанавливает активным индекс столбца (.resize-handle),
     // на который нажал пользователь для изменения его ширины
@@ -105,8 +105,8 @@ const Table = ({headers, tableContent, minCellWidth, onOpenModal}) => {
                 <tbody>
                 {tableContent.map((row, rowID) => (
                     <tr key={rowID}
-                        onClick = {() => onOpenModal(rowID)}>
-                        {row.map((cell, cellID) => (
+                        onClick = {() => onOpenModal(row.id)}>
+                        {row.rowData.map((cell, cellID) => (
                             <td key={cellID}>
                                     <span>
                                         {cell}
